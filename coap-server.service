@@ -11,10 +11,5 @@ ExecStart=/usr/local/bin/bun run src/index.ts
 Restart=on-failure
 RestartSec=5
 
-NoNewPrivileges=true
-ProtectSystem=strict
-ProtectHome=true
-PrivateTmp=true
-
 [Install]
 WantedBy=multi-user.target
