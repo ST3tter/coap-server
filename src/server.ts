@@ -1,7 +1,33 @@
 import { createServer, type IncomingMessage, type OutgoingMessage } from "coap";
 
 export function handleRequest(req: IncomingMessage, res: OutgoingMessage): void {
-  console.log(`${req.method} ${req.url}`);
+  const client = (req as any).rsinfo;
+  const packet = (req as any)._packet;
+
+  const tokenHex = packet?.token ? Buffer.from(packet.token).toString("hex") : "none";
+  const messageType = packet?.confirmable
+    ? "CON"
+    : packet?.ack
+      ? "ACK"
+      : packet?.reset
+        ? "RST"
+        : "NON";
+
+  const headers = req.headers;
+  const filteredHeaders: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(headers)) {
+    if (value !== undefined && value !== null && value !== "") {
+      filteredHeaders[key] = value;
+    }
+  }
+
+  console.log("--- CoAP Request ---");
+  console.log(`  Method: ${req.method} ${req.url}`);
+  console.log(`  Client: ${client?.address}:${client?.port} (${client?.family})`);
+  console.log(`  Message ID: ${packet?.messageId} | Token: ${tokenHex} | Type: ${messageType}`);
+  console.log(`  Payload: ${req.payload?.length ?? 0} bytes`);
+  console.log(`  Headers: ${JSON.stringify(filteredHeaders)}`);
+  console.log("---");
 
   if (req.method === "GET" && req.url === "/") {
     res.end("Hello from CoAP!");
