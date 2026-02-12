@@ -25,7 +25,8 @@ export function handleRequest(req: IncomingMessage, res: OutgoingMessage): void 
   console.log(`  Method: ${req.method} ${req.url}`);
   console.log(`  Client: ${client?.address}:${client?.port} (${client?.family})`);
   console.log(`  Message ID: ${packet?.messageId} | Token: ${tokenHex} | Type: ${messageType}`);
-  console.log(`  Payload: ${req.payload?.length ?? 0} bytes`);
+  const payloadHex = req.payload?.length ? Buffer.from(req.payload).toString("hex") : "empty";
+  console.log(`  Payload: ${req.payload?.length ?? 0} bytes | Data: ${payloadHex}`);
   console.log(`  Headers: ${JSON.stringify(filteredHeaders)}`);
   console.log("---");
 
