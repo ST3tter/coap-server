@@ -34,7 +34,7 @@ export function handleRequest(req: IncomingMessage, res: OutgoingMessage): void 
     return;
   }
 
-  if (req.method === "POST" && req.url === "/temp") {
+  if (req.method === "POST" && (req.url === "/temp" || req.url === "/")) {
     res.code = "2.01";
     res.end();
     return;
